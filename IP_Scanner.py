@@ -1,8 +1,6 @@
 #! usr/bin/env python3
 
 import re
-from pprint import pprint
-from netmiko import ConnectHandler
 import os
 
 
