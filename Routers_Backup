@@ -1,0 +1,33 @@
+from netmiko import ConnectHandler
+import getpass
+
+''' 
+This script is used to run a few commands to collect info from cisco devices via Netmiko.
+'''
+
+with open("router.txt", "r") as file:
+
+    for device_row in file:
+
+        try:
+            router_ip = device_row.strip()
+            ssh_username = "admin-fariyikes"
+            ssh_password = getpass.getpass('SSH Password: ')
+            ssh_session = ConnectHandler(device_type='cisco_ios', ip=router_ip,
+            username=ssh_username, password=ssh_password)
+            with open(f"router_{router_ip}_output.txt", "w") as y:
+                o = ssh_session.send_command("term len 0")
+                y.write(o)
+                print("term len 0")
+                p = ssh_session.send_command("show version")
+                print("show version")
+                y.write(p)
+                q = ssh_session.send_command("show run")
+                print("show version")
+                y.write(q)
+                print(f"The output for {router_ip} has been saved")
+
+        except:
+            with open("Unreachable_devices.txt", "a") as g:
+                g.write(f"{router_ip} authentication failed")
+                print(f"Authentication for {router_ip} failed")
