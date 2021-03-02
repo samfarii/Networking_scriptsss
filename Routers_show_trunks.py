@@ -12,7 +12,7 @@ with open(r"C:\Users\Fariyikes\RCC_Backup_18022021\router.txt", "r") as file:
             router_ip = device_row.strip()
             ssh_username = "admin-fariyikes"
             #ssh_password = getpass.getpass('SSH Password: ')
-            ssh_password = "Td697aaa@Farii"
+            ssh_password = "xxxxxxx"
             ssh_session = ConnectHandler(device_type='cisco_ios', ip=router_ip,
             username=ssh_username, password=ssh_password, global_delay_factor=2)
             with open(fr"C:\Users\Fariyikes\RCC_Backup_18022021\New\router_{router_ip}_output.txt", "a") as y:
