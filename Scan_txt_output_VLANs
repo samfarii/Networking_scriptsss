@@ -1,0 +1,48 @@
+import os
+import re
+import csv
+import io
+import textfsm
+
+# template for text fsm to extract the vlan ids per device
+template = io.StringIO("""\
+Value vlan_id (\d+)
+Value vlan_name (.*)
+Value vlan_status (active)
+Value List Ports (.*)
+
+Start
+ ^ -> Continue.Record
+ ^${vlan_id}\s+${vlan_name}\s+${vlan_status}\s+${Ports}
+ ^\s+${Ports}
+""")
+
+files = os.listdir(r"C:\Users\Fariyikes\RCC_Backup_18022021\New")
+
+for j in files:
+    #extract device ip addresses from the text file name
+    if "output.txt" in j:
+        device_ip = re.findall("(\d+\.\d+\.\d+\.\d+)", j)
+        device_ip = device_ip[0]
+        print(f"Starting the parse for vlans on device = {device_ip}")
+    #open output text file and parse using TextFSM
+
+
+        with open(fr"C:\Users\Fariyikes\RCC_Backup_18022021\New\{j}", "r") as f:
+            fsm = textfsm.TextFSM(template)
+            result = fsm.ParseText(f.read())
+
+            print(f"Now printing the vlans for:  ", device_ip)
+
+            with open(fr"C:\Users\Fariyikes\RCC_Backup_18022021\RCC_device_VLANS7.csv", "a", newline='') as g:
+                writer = csv.writer(g)
+                y = list(result)
+                print("This is it: ", y)
+                #Convert VLANS output into a list, append the router ID to the list and then print to csv so it's easier to filter in csv
+                
+                for i in y:
+                    i.append(device_ip)
+                    print(i)
+                    writer.writerow(i)
+
+        print(f"The VLANs have been extracted for device = {device_ip}\n")
